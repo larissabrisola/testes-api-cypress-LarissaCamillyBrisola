@@ -16,7 +16,7 @@ describe('Cadastro de usuário', () => {
 
     it('Cadastro realizado com sucesso', () => {
 
-        cy.log(randomEmail)
+       
         cy.request({
             method: 'POST',
             url: `${baseUrl}/users`,
@@ -103,11 +103,62 @@ describe('Cadastro de usuário', () => {
 
         })
 
-        // add teste de campos vazios 
-
     })
 
+    it('Cadastro não realizado - Campo senha vazio ', ()=>{
+           
+        cy.request({
+            method: 'POST',
+            url: `${baseUrl}/users`,
+            body: {
+                "name": randomName,
+                "email": randomEmail,
+                "password": ""
+            }, failOnStatusCode: false 
+
+
+        }).then((response)=>{
+            expect(response.status).to.equal(400)
+            expect(response.body).to.deep.equal({
+                "message": [
+                "password must be longer than or equal to 6 characters",
+                "password should not be empty"
+                ],
+                "error": "Bad Request",
+                "statusCode": 400
+                })
+        })
+    })
+
+
+    it('Cadastro não realizado - Campo email vazio ', ()=>{
+           
+        cy.request({
+            method: 'POST',
+            url: `${baseUrl}/users`,
+            body: {
+                "name": randomName,
+                "email": "",
+                "password": "aaawsder"
+            }, failOnStatusCode: false
+
+        }).then((response)=>{
+            expect(response.status).to.equal(400)
+
+            expect(response.body).to.deep.equal({
+                "message": [
+                "email must be longer than or equal to 1 characters",
+                "email must be an email",
+                "email should not be empty"
+                ],
+                "error": "Bad Request",
+                "statusCode": 400
+                })
+        })
+    })
 })
+
+
 
 
 

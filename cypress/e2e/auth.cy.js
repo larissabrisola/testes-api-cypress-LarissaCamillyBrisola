@@ -1,8 +1,7 @@
 
 describe('Login', () => {
     let baseUrl;
-
-
+    
     beforeEach(() => {
         baseUrl = 'https://raromdb-3c39614e42d4.herokuapp.com/api/auth/login'
     })
