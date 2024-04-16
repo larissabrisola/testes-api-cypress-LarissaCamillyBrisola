@@ -1,4 +1,4 @@
-# ATIVIDADE 3 - Testes de API com Cypress 
+# Testes de API com Cypress 
 
 Todas as questões abaixo devem considerar a API Raromdb, cuja documentação swagger está publicada no seguinte endereço: https://raromdb-3c39614e42d4.herokuapp.com/swagger
 

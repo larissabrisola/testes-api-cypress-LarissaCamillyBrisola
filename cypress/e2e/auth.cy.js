@@ -1,0 +1,6 @@
+describe('Autenticar usuário', ()=>{
+
+    it('', ()=>{
+        
+    })
+})
