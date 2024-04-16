@@ -11,3 +11,5 @@ Todas as questões abaixo devem considerar a API Raromdb, cuja documentação sw
  3. Para o recurso filmes, crie cenários de teste relacionados à consulta de filme. Por enquanto, desconsidere os detalhes sobre as avaliações dos filmes
 
  
+
+ 

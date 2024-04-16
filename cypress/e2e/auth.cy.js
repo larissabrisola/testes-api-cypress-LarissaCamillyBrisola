@@ -15,6 +15,8 @@ describe('Login', () => {
                 password: "lwalala"
             }
         }).its('status').should('to.equal', 200)
+
+        //then((response)=>{expect.... to.have.property
     })
 
     it('Login não realizado - senha incorreta', () => {
@@ -81,7 +83,7 @@ describe('Login', () => {
     })
 
 
-    it('login não realizado - campo senha vazio', () => {
+    it('Login não realizado - campo senha vazio', () => {
         cy.request({
             method: 'POST',
             url: baseUrl,
@@ -103,7 +105,7 @@ describe('Login', () => {
         })
     })
 
-    it('login não realizado - campo email vazio', () => {
+    it('Login não realizado - campo email vazio', () => {
         cy.request({
             method: 'POST',
             url: baseUrl,

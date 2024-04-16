@@ -28,10 +28,12 @@ describe('Cadastro de usuário', () => {
 
         }).its('status').should('to.equal', 201)
 
+        
+
 
     })
 
-    it('Cadastro não realizado - senha curta demais (minimo 6 caracteres)', () => {
+    it('Cadastro não realizado - Senha curta demais (minimo 6 caracteres)', () => {
 
         cy.request({
             method: 'POST',
@@ -58,7 +60,7 @@ describe('Cadastro de usuário', () => {
 
     })
 
-    it('Cadastro não realizado - formato de email inválido', () => {
+    it('Cadastro não realizado - Formato de email inválido', () => {
         cy.request({
             method: 'POST',
             url: `${baseUrl}/users`,
@@ -81,7 +83,7 @@ describe('Cadastro de usuário', () => {
         })
     })
 
-    it('Cadastro não realizado - email já cadastrado ', () => {
+    it('Cadastro não realizado - Email já cadastrado ', () => {
         cy.request({
             method: 'POST',
             url: `${baseUrl}/users`,
@@ -161,4 +163,8 @@ describe('Cadastro de usuário', () => {
 
 
 
+
+describe('Consulta usuários', ()=>{
+
+})
 
