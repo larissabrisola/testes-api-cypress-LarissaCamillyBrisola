@@ -190,7 +190,7 @@ describe('Consulta usuários', () => {
     baseUrl = 'https://raromdb-3c39614e42d4.herokuapp.com/api'
 
 
-    it('Promoção de admin', () => {
+    it('Listar todos usuarios', () => {
 
         let token;
         randomName = faker.person.fullName();
@@ -210,6 +210,7 @@ describe('Consulta usuários', () => {
 
         })
 
+        
         // login de usuario 
         cy.request({
             method: 'POST',
@@ -238,6 +239,7 @@ describe('Consulta usuários', () => {
 
 
             //lista todos usuarios 
+            
             cy.request({
                 method: 'GET',
                 url: 'https://raromdb-3c39614e42d4.herokuapp.com/api/users',
@@ -273,6 +275,8 @@ describe('Consulta usuários', () => {
 })
 
     // aprimoramentos futuros: 
+        // consulta de usuarios + fixtures
+        // reduzir codigo no arquivo usando cy.commands
         //  delete user 
         // update user id 
         // promote user to critic
