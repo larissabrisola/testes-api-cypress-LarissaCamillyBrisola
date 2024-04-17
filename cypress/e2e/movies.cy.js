@@ -7,7 +7,7 @@ describe('Consultar filmes', () => {
         baseUrl = 'https://raromdb-3c39614e42d4.herokuapp.com/api/movies'
     })
 
-
+    //public
     it('Listar todos os filmes com sucesso', () => {
         cy.request({
             method: 'GET',
@@ -19,7 +19,7 @@ describe('Consultar filmes', () => {
         })
     })
 
-
+    //public
     it('Pesquisar filme por ID com sucesso', () => {
 
         cy.request({
@@ -40,7 +40,7 @@ describe('Consultar filmes', () => {
 
     })
 
-
+    //public
     it('Pesquisar filme por Titulo com sucesso', () => {
         cy.request({
             method: 'GET',

@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 
 let baseUrl;
 
+//public
 describe('Cadastro de usuário', () => {
     let randomName;
     let randomEmail;
@@ -15,7 +16,6 @@ describe('Cadastro de usuário', () => {
     })
 
     it('Cadastro realizado com sucesso', () => {
-
        
         cy.request({
             method: 'POST',
@@ -181,9 +181,19 @@ describe('Cadastro de usuário', () => {
 
 
 
-
-
+// admin funcs
 describe('Consulta usuários', ()=>{
-    // decifrando como fazer o admin aqui 
-})
+   
 
+    // list users 
+    // find user by id 
+    // delete user 
+    // update user id 
+    // promote user to critic
+    // promote user to admin 
+
+
+
+
+
+})

@@ -35,6 +35,9 @@ describe('Login', () => {
             }
         }).then((response)=>{
             expect(response.status).to.equal(200)
+            expect(response.body).to.be.an('Object')
+            expect(response.body).to.have.property('accessToken')
+
         })
 
         //then((response)=>{expect.... to.have.property
