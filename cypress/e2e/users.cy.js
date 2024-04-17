@@ -1,4 +1,5 @@
 
+/// <reference types="cypress" />
 import { faker } from '@faker-js/faker';
 
 let baseUrl;
@@ -183,13 +184,13 @@ describe('Cadastro de usuário', () => {
 
 // admin funcs
 describe('Consulta usuários', () => {
-    //steps 
+
     let randomName;
     let randomEmail;
     baseUrl = 'https://raromdb-3c39614e42d4.herokuapp.com/api'
 
 
-    it('surto', () => {
+    it('Promoção de admin', () => {
 
         let token;
         randomName = faker.person.fullName();
@@ -204,9 +205,12 @@ describe('Consulta usuários', () => {
                 "password": "lwalala"
             }
 
-        })
-        // loga usuario
+        }).then((response) => {
+            expect(response.status).to.equal(201)
 
+        })
+
+        // login de usuario 
         cy.request({
             method: 'POST',
             url: 'https://raromdb-3c39614e42d4.herokuapp.com/api/auth/login',
@@ -219,31 +223,57 @@ describe('Consulta usuários', () => {
             expect(response.body).to.be.an('Object')
             expect(response.body).to.have.property('accessToken')
 
-            token = response.body.acessToken 
+            token = response.body.accessToken
 
-            cy.log(token)
+            // promove usuario a admin 
+            cy.request({
+                method: 'PATCH',
+                url: `${baseUrl}/users/admin`,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then((response) => {
+                expect(response.status).to.equal(204)
+            })
+
+
+            //lista todos usuarios 
+            cy.request({
+                method: 'GET',
+                url: 'https://raromdb-3c39614e42d4.herokuapp.com/api/users',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then((response) => {
+                expect(response.status).to.equal(200);
+                expect(response.body).to.be.an('array')
+
+            })
+
+            // busca usuario por id 
+            cy.request({
+                method: 'GET',
+                url: 'https://raromdb-3c39614e42d4.herokuapp.com/api/users/1',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then((response) => {
+                expect(response.status).to.equal(200)
+                expect(response.body).to.be.an('Object')
+                expect(response.body).to.have.property('email');
+                expect(response.body).to.have.property('name');
+                expect(response.body).to.have.property('id');
+            })
         })
 
 
-    
-
     })
-
-    // promove usuario a admin 
-
-
-
-
-
-    // list users 
-    // find user by id 
-    // delete user 
-    // update user id 
-    // promote user to critic
-    // promote user to admin 
-
-
-
 
 
 })
+
+    // aprimoramentos futuros: 
+        //  delete user 
+        // update user id 
+        // promote user to critic
+        // promote user to admin 
