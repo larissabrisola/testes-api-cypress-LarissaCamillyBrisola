@@ -16,7 +16,7 @@ describe('Cadastro de usuário', () => {
     })
 
     it('Cadastro realizado com sucesso', () => {
-       
+
         cy.request({
             method: 'POST',
             url: `${baseUrl}/users`,
@@ -26,7 +26,7 @@ describe('Cadastro de usuário', () => {
                 "password": "lwalala"
             }
 
-        }).then((response)=>{
+        }).then((response) => {
             expect(response.status).to.equal(201);
             expect(response.body).to.have.property('email');
             expect(response.body).to.have.property('name');
@@ -34,7 +34,7 @@ describe('Cadastro de usuário', () => {
 
         })
 
-        
+
 
 
     })
@@ -90,9 +90,9 @@ describe('Cadastro de usuário', () => {
     })
 
     it('Cadastro não realizado - Email já cadastrado ', () => {
-        
+
         cy.request({
-            method: 'POST', 
+            method: 'POST',
             url: `${baseUrl}/users`,
             body: {
                 "name": randomName,
@@ -101,7 +101,7 @@ describe('Cadastro de usuário', () => {
             }
 
         })
-        
+
         // reutilizando o mesmo email acima 
         cy.request({
             method: 'POST',
@@ -126,8 +126,8 @@ describe('Cadastro de usuário', () => {
 
     })
 
-    it('Cadastro não realizado - Campo senha vazio ', ()=>{
-           
+    it('Cadastro não realizado - Campo senha vazio ', () => {
+
         cy.request({
             method: 'POST',
             url: `${baseUrl}/users`,
@@ -135,25 +135,25 @@ describe('Cadastro de usuário', () => {
                 "name": randomName,
                 "email": randomEmail,
                 "password": ""
-            }, failOnStatusCode: false 
+            }, failOnStatusCode: false
 
 
-        }).then((response)=>{
+        }).then((response) => {
             expect(response.status).to.equal(400)
             expect(response.body).to.deep.equal({
                 "message": [
-                "password must be longer than or equal to 6 characters",
-                "password should not be empty"
+                    "password must be longer than or equal to 6 characters",
+                    "password should not be empty"
                 ],
                 "error": "Bad Request",
                 "statusCode": 400
-                })
+            })
         })
     })
 
 
-    it('Cadastro não realizado - Campo email vazio ', ()=>{
-           
+    it('Cadastro não realizado - Campo email vazio ', () => {
+
         cy.request({
             method: 'POST',
             url: `${baseUrl}/users`,
@@ -163,18 +163,18 @@ describe('Cadastro de usuário', () => {
                 "password": "aaawsder"
             }, failOnStatusCode: false
 
-        }).then((response)=>{
+        }).then((response) => {
             expect(response.status).to.equal(400)
 
             expect(response.body).to.deep.equal({
                 "message": [
-                "email must be longer than or equal to 1 characters",
-                "email must be an email",
-                "email should not be empty"
+                    "email must be longer than or equal to 1 characters",
+                    "email must be an email",
+                    "email should not be empty"
                 ],
                 "error": "Bad Request",
                 "statusCode": 400
-                })
+            })
         })
     })
 })
@@ -182,8 +182,58 @@ describe('Cadastro de usuário', () => {
 
 
 // admin funcs
-describe('Consulta usuários', ()=>{
-   
+describe('Consulta usuários', () => {
+    //steps 
+    let randomName;
+    let randomEmail;
+    baseUrl = 'https://raromdb-3c39614e42d4.herokuapp.com/api'
+
+
+    it('surto', () => {
+
+        let token;
+        randomName = faker.person.fullName();
+        randomEmail = faker.internet.email();
+        // cadastro usuario 
+        cy.request({
+            method: 'POST',
+            url: `${baseUrl}/users`,
+            body: {
+                "name": randomName,
+                "email": randomEmail,
+                "password": "lwalala"
+            }
+
+        })
+        // loga usuario
+
+        cy.request({
+            method: 'POST',
+            url: 'https://raromdb-3c39614e42d4.herokuapp.com/api/auth/login',
+            body: {
+                email: randomEmail,
+                password: "lwalala"
+            }
+        }).then((response) => {
+            expect(response.status).to.equal(200)
+            expect(response.body).to.be.an('Object')
+            expect(response.body).to.have.property('accessToken')
+
+            token = response.body.acessToken 
+
+            cy.log(token)
+        })
+
+
+    
+
+    })
+
+    // promove usuario a admin 
+
+
+
+
 
     // list users 
     // find user by id 
