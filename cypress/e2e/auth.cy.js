@@ -1,17 +1,36 @@
+import { faker } from "@faker-js/faker";
+
 
 describe('Login', () => {
     let baseUrl;
+    let randomEmail;
     
     beforeEach(() => {
         baseUrl = 'https://raromdb-3c39614e42d4.herokuapp.com/api/auth/login'
     })
 
     it('Login realizado com sucesso', () => {
+
+        randomEmail = faker.internet.email();
+
+
+        //cadastro valido
+        cy.request({
+            method: 'POST',
+            url: 'https://raromdb-3c39614e42d4.herokuapp.com/api/users',
+            body: {
+                "name": "jujuco",
+                "email": randomEmail,
+                "password": "lwalala"
+        }})
+
+        // login do cadastro realizado acima
+
         cy.request({
             method: 'POST',
             url: baseUrl,
             body: {
-                email: "juquinha@gmail.com",
+                email: randomEmail,
                 password: "lwalala"
             }
         }).then((response)=>{
@@ -21,13 +40,13 @@ describe('Login', () => {
         //then((response)=>{expect.... to.have.property
     })
 
-    it('Login não realizado - senha incorreta', () => {
+    it('Login não realizado - senha incorreta/curta', () => {
         cy.request({
             method: 'POST',
             url: baseUrl,
             body: {
                 email: "juquinha@gmail.com",
-                password: "oioiwoi"
+                password: "oio"
             }, failOnStatusCode: false
 
         }).then((response) => {

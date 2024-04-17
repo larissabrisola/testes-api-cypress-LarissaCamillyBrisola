@@ -1,5 +1,5 @@
 
-describe('Consultar filme', () => {
+describe('Consultar filmes', () => {
 
     let baseUrl;
 
@@ -35,7 +35,7 @@ describe('Consultar filme', () => {
             expect(response.body).to.have.property('durationInMinutes')
             expect(response.body).to.have.property('releaseYear')
 
-
+        // nao criei caso de erro pois mesmo colocando um id que nao existe, a api retorna 200 pois a chamada foi feita
         })
 
     })
@@ -49,8 +49,8 @@ describe('Consultar filme', () => {
         }).then((response) => {
             expect(response.status).to.equal(200)
             expect(response.body).to.be.an('array')
-            // tem muito titulo repetido, infelizmente não fui capaz de entender como fazer cair em um especifico sem ser por ID, então sempre é array, nunca cai apenas naquele titulo.
-        })
+        // nao criei caso de erro pois mesmo colocando um titulo que nao existe, a api retorna 200 pois a chamada foi feita
+    })
     })
 
 })

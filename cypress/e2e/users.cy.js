@@ -184,6 +184,6 @@ describe('Cadastro de usuário', () => {
 
 
 describe('Consulta usuários', ()=>{
-
+    // decifrando como fazer o admin aqui 
 })
 
