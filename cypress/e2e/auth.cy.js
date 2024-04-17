@@ -14,7 +14,9 @@ describe('Login', () => {
                 email: "juquinha@gmail.com",
                 password: "lwalala"
             }
-        }).its('status').should('to.equal', 200)
+        }).then((response)=>{
+            expect(response.status).to.equal(200)
+        })
 
         //then((response)=>{expect.... to.have.property
     })

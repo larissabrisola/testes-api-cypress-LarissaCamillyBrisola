@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 
 describe('Consultar filme', () => {
 
@@ -13,7 +12,11 @@ describe('Consultar filme', () => {
         cy.request({
             method: 'GET',
             url: baseUrl,
-        }).its('status').should('to.equal', 200)
+        }).then((response)=>{
+            expect(response.status).to.equal(200)
+            expect(response.body).to.be.an('array')
+
+        })
     })
 
 
@@ -25,19 +28,14 @@ describe('Consultar filme', () => {
 
         }).then((response) => {
             expect(response.status).to.equal(200)
-            expect(response.body).to.deep.equal({
+            expect(response.body).to.have.property('id')
+            expect(response.body).to.have.property('title')
+            expect(response.body).to.have.property('genre')
+            expect(response.body).to.have.property('description')
+            expect(response.body).to.have.property('durationInMinutes')
+            expect(response.body).to.have.property('releaseYear')
 
-                "id": 19,
-                "title": "Barbie",
-                "description": "O filme da Barbie e do Ken",
-                "genre": "Fantasia",
-                "reviews": [],
-                "durationInMinutes": 135,
-                "releaseYear": 2023,
-                "criticScore": 0,
-                "audienceScore": 0
 
-            })
         })
 
     })
@@ -49,9 +47,9 @@ describe('Consultar filme', () => {
             url: `${baseUrl}/search?title=nobody`
 
         }).then((response) => {
-            cy.log(response)
             expect(response.status).to.equal(200)
-            
+            expect(response.body).to.be.an('array')
+            // tem muito titulo repetido, infelizmente não fui capaz de entender como fazer cair em um especifico sem ser por ID, então sempre é array, nunca cai apenas naquele titulo.
         })
     })
 

@@ -26,7 +26,13 @@ describe('Cadastro de usuário', () => {
                 "password": "lwalala"
             }
 
-        }).its('status').should('to.equal', 201)
+        }).then((response)=>{
+            expect(response.status).to.equal(201);
+            expect(response.body).to.have.property('email');
+            expect(response.body).to.have.property('name');
+            expect(response.body).to.have.property('id');
+
+        })
 
         
 
@@ -84,12 +90,25 @@ describe('Cadastro de usuário', () => {
     })
 
     it('Cadastro não realizado - Email já cadastrado ', () => {
+        
+        cy.request({
+            method: 'POST', 
+            url: `${baseUrl}/users`,
+            body: {
+                "name": randomName,
+                "email": randomEmail,
+                "password": "lwalala"
+            }
+
+        })
+        
+        // reutilizando o mesmo email acima 
         cy.request({
             method: 'POST',
             url: `${baseUrl}/users`,
             body: {
-                "name": "Luis",
-                "email": "juquinha@gmail.com",
+                "name": randomName,
+                "email": randomEmail,
                 "password": "lwalala"
             }, failOnStatusCode: false
 
