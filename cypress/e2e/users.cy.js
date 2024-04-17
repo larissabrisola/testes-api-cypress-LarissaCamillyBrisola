@@ -251,7 +251,7 @@ describe('Consulta usuários', () => {
             })
 
             // busca usuario por id 
-            cy.request({
+            cy.request({ 
                 method: 'GET',
                 url: 'https://raromdb-3c39614e42d4.herokuapp.com/api/users/1',
                 headers: {
