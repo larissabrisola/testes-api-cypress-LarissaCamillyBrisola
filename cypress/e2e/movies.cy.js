@@ -7,15 +7,8 @@ describe('Atualização de filmes', ()=>{
 })
 
 
-
 //done
 describe('Consultar filmes', () => {
-
-    let baseUrl;
-
-    beforeEach(() => {
-        baseUrl = 'https://raromdb-3c39614e42d4.herokuapp.com/api/movies'
-    })
 
     //public
     it('Listar todos os filmes com sucesso', () => {
@@ -31,7 +24,7 @@ describe('Consultar filmes', () => {
 
         cy.request({
             method: 'GET',
-            url: `${baseUrl}/19`
+            url: `/movies/19`
 
         }).then((response) => {
             expect(response.status).to.equal(200)
@@ -52,7 +45,7 @@ describe('Consultar filmes', () => {
     it('Pesquisar filme por Titulo com sucesso', () => {
         cy.request({
             method: 'GET',
-            url: `${baseUrl}/search?title=nobody`
+            url: `/movies/search?title=nobody`
 
         }).then((response) => {
             expect(response.status).to.equal(200)

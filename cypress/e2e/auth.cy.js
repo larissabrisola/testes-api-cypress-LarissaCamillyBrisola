@@ -1,13 +1,10 @@
 import { faker } from "@faker-js/faker";
 
-
 describe('Login', () => {
-    let baseUrl;
     let randomEmail;
     let randomName;
     
     beforeEach(() => {
-        baseUrl = 'https://raromdb-3c39614e42d4.herokuapp.com/api/auth/login'
         randomEmail = faker.internet.email();
         randomName = faker.person.fullName();
 
