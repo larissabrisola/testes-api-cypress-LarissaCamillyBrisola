@@ -9,10 +9,7 @@ describe('Consultar filmes', () => {
 
     //public
     it('Listar todos os filmes com sucesso', () => {
-        cy.request({
-            method: 'GET',
-            url: baseUrl,
-        }).then((response)=>{
+        cy.request('GET', '/movies').then((response) => {
             expect(response.status).to.equal(200)
             expect(response.body).to.be.an('array')
 
@@ -35,7 +32,7 @@ describe('Consultar filmes', () => {
             expect(response.body).to.have.property('durationInMinutes')
             expect(response.body).to.have.property('releaseYear')
 
-        // nao criei caso de erro pois mesmo colocando um id que nao existe, a api retorna 200 pois a chamada foi feita
+            // nao criei caso de erro pois mesmo colocando um id que nao existe, a api retorna 200 pois a chamada foi feita
         })
 
     })
@@ -49,8 +46,8 @@ describe('Consultar filmes', () => {
         }).then((response) => {
             expect(response.status).to.equal(200)
             expect(response.body).to.be.an('array')
-        // nao criei caso de erro pois mesmo colocando um titulo que nao existe, a api retorna 200 pois a chamada foi feita
-    })
+            // nao criei caso de erro pois mesmo colocando um titulo que nao existe, a api retorna 200 pois a chamada foi feita
+        })
     })
 
 })

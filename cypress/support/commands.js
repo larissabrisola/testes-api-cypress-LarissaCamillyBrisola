@@ -23,3 +23,22 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+
+Cypress.Commands.add('cadastroUsuario', (name, email, password, failOnStatusCode)=>{
+    cy.request( 
+        {method:'POST', url: `/users`,
+         body: {
+            "name": name,
+            "email": email,
+            "password": password
+        }, failOnStatusCode: failOnStatusCode}
+)
+})
+
+
+//Cypress.Commands.add('deletar', (id)=>{
+//    cy.request( 'DELETE', `/users/${id}`
+//)
+//})
+

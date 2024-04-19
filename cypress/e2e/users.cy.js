@@ -9,8 +9,8 @@ describe('Cadastro de usuário', () => {
     let randomName;
     let randomEmail;
 
+    
     beforeEach(() => {
-        baseUrl = 'https://raromdb-3c39614e42d4.herokuapp.com/api'
 
         randomName = faker.person.fullName();
         randomEmail = faker.internet.email();
@@ -18,40 +18,18 @@ describe('Cadastro de usuário', () => {
 
     it('Cadastro realizado com sucesso', () => {
 
-        cy.request({
-            method: 'POST',
-            url: `${baseUrl}/users`,
-            body: {
-                "name": randomName,
-                "email": randomEmail,
-                "password": "lwalala"
-            }
-
-        }).then((response) => {
+        cy.cadastroUsuario(randomName, randomEmail, "xuxusjk", true).then((response)=>{
             expect(response.status).to.equal(201);
-            expect(response.body).to.have.property('email');
-            expect(response.body).to.have.property('name');
-            expect(response.body).to.have.property('id');
-
+            expect(response.body).to.have.property("id");
+            expect(response.body).to.have.property("email");
+            expect(response.body).to.have.property("name")
+        
         })
-
-
-
-
     })
 
     it('Cadastro não realizado - Senha curta demais (minimo 6 caracteres)', () => {
 
-        cy.request({
-            method: 'POST',
-            url: `${baseUrl}/users`,
-            body: {
-                "name": randomName,
-                "email": randomEmail,
-                "password": "lwa"
-            }, failOnStatusCode: false
-
-        }).then((response) => {
+        cy.cadastroUsuario(randomName, randomEmail, "oui", false).then((response) => {
 
             expect(response.status).to.equal(400);
             expect(response.body).to.deep.equal({
@@ -68,16 +46,7 @@ describe('Cadastro de usuário', () => {
     })
 
     it('Cadastro não realizado - Formato de email inválido', () => {
-        cy.request({
-            method: 'POST',
-            url: `${baseUrl}/users`,
-            body: {
-                "name": randomName,
-                "email": "jojocacom",
-                "password": "lwalala"
-            }, failOnStatusCode: false
-
-        }).then((response) => {
+        cy.cadastroUsuario(randomName, "jojocacom", "senha12345", false ).then((response) => {
             expect(response.status).to.equal(400);
             expect(response.body).to.deep.equal({
                 "message": [
@@ -92,28 +61,10 @@ describe('Cadastro de usuário', () => {
 
     it('Cadastro não realizado - Email já cadastrado ', () => {
 
-        cy.request({
-            method: 'POST',
-            url: `${baseUrl}/users`,
-            body: {
-                "name": randomName,
-                "email": randomEmail,
-                "password": "lwalala"
-            }
-
-        })
-
+        cy.cadastroUsuario( randomName, randomEmail, "lwalala", true)
         // reutilizando o mesmo email acima 
-        cy.request({
-            method: 'POST',
-            url: `${baseUrl}/users`,
-            body: {
-                "name": randomName,
-                "email": randomEmail,
-                "password": "lwalala"
-            }, failOnStatusCode: false
+        cy.cadastroUsuario(randomName, randomEmail, "lwalala", false).then((response) => {
 
-        }).then((response) => {
             expect(response.status).to.equal(409);
             expect(response.body).to.deep.equal(
                 {
@@ -121,25 +72,13 @@ describe('Cadastro de usuário', () => {
                     "error": "Conflict",
                     "statusCode": 409
                 })
-
-
         })
 
     })
 
     it('Cadastro não realizado - Campo senha vazio ', () => {
 
-        cy.request({
-            method: 'POST',
-            url: `${baseUrl}/users`,
-            body: {
-                "name": randomName,
-                "email": randomEmail,
-                "password": ""
-            }, failOnStatusCode: false
-
-
-        }).then((response) => {
+        cy.cadastroUsuario( randomName, randomEmail, "", false).then((response) => {
             expect(response.status).to.equal(400)
             expect(response.body).to.deep.equal({
                 "message": [
@@ -155,17 +94,8 @@ describe('Cadastro de usuário', () => {
 
     it('Cadastro não realizado - Campo email vazio ', () => {
 
-        cy.request({
-            method: 'POST',
-            url: `${baseUrl}/users`,
-            body: {
-                "name": randomName,
-                "email": "",
-                "password": "aaawsder"
-            }, failOnStatusCode: false
-
-        }).then((response) => {
-            expect(response.status).to.equal(400)
+        cy.cadastroUsuario( randomName, "", "senha12345", false).then((response) => {
+            expect(response.status).to.equal(400);
 
             expect(response.body).to.deep.equal({
                 "message": [
@@ -179,7 +109,6 @@ describe('Cadastro de usuário', () => {
         })
     })
 })
-
 
 
 // admin funcs
