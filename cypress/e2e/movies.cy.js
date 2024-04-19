@@ -1,4 +1,14 @@
+describe('Cadastro de filmes', ()=>{
+    
+})
 
+describe('Atualização de filmes', ()=>{
+    
+})
+
+
+
+//done
 describe('Consultar filmes', () => {
 
     let baseUrl;
@@ -25,6 +35,8 @@ describe('Consultar filmes', () => {
 
         }).then((response) => {
             expect(response.status).to.equal(200)
+
+            // se usar um ID que não existe, o status code ainda é 200. Mas a partir dos outros testes, começa a falhar pois não tá entregando o que foi solicitado. Falta criar um retorno de erro na api para esse caso
             expect(response.body).to.have.property('id')
             expect(response.body).to.have.property('title')
             expect(response.body).to.have.property('genre')
@@ -32,7 +44,6 @@ describe('Consultar filmes', () => {
             expect(response.body).to.have.property('durationInMinutes')
             expect(response.body).to.have.property('releaseYear')
 
-            // nao criei caso de erro pois mesmo colocando um id que nao existe, a api retorna 200 pois a chamada foi feita
         })
 
     })
@@ -51,3 +62,4 @@ describe('Consultar filmes', () => {
     })
 
 })
+

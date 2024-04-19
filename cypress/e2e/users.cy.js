@@ -2,13 +2,11 @@
 /// <reference types="cypress" />
 import { faker } from '@faker-js/faker';
 
-let baseUrl;
 
 //public
 describe('Cadastro de usuário', () => {
     let randomName;
     let randomEmail;
-
     
     beforeEach(() => {
 
@@ -110,68 +108,37 @@ describe('Cadastro de usuário', () => {
     })
 })
 
-
 // admin funcs
 describe('Consulta usuários', () => {
 
     let randomName;
     let randomEmail;
-    baseUrl = 'https://raromdb-3c39614e42d4.herokuapp.com/api'
 
-
-    it('Listar todos usuarios', () => {
+    it('Listar todos usuarios com sucesso', () => {
 
         let token;
         randomName = faker.person.fullName();
         randomEmail = faker.internet.email();
-        // cadastro usuario 
-        cy.request({
-            method: 'POST',
-            url: `${baseUrl}/users`,
-            body: {
-                "name": randomName,
-                "email": randomEmail,
-                "password": "lwalala"
-            }
-
-        }).then((response) => {
-            expect(response.status).to.equal(201)
-
-        })
-
         
-        // login de usuario 
-        cy.request({
-            method: 'POST',
-            url: 'https://raromdb-3c39614e42d4.herokuapp.com/api/auth/login',
-            body: {
-                email: randomEmail,
-                password: "lwalala"
-            }
-        }).then((response) => {
+        //steps 
+        cy.cadastroUsuario( randomName, randomEmail, "lwalala", true).then((response) => {
+            expect(response.status).to.equal(201)})
+
+        cy.efetuarLogin( randomEmail, "lwalala", true).then((response) => {
             expect(response.status).to.equal(200)
             expect(response.body).to.be.an('Object')
             expect(response.body).to.have.property('accessToken')
 
             token = response.body.accessToken
 
-            // promove usuario a admin 
-            cy.request({
-                method: 'PATCH',
-                url: `${baseUrl}/users/admin`,
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }).then((response) => {
-                expect(response.status).to.equal(204)
-            })
+        cy.promoverAdministrador(token, true).then((response) => {
+            expect(response.status).to.equal(204)})
 
-
-            //lista todos usuarios 
+        //lista todos usuarios 
             
-            cy.request({
+        cy.request({
                 method: 'GET',
-                url: 'https://raromdb-3c39614e42d4.herokuapp.com/api/users',
+                url: '/users',
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -180,16 +147,43 @@ describe('Consulta usuários', () => {
                 expect(response.body).to.be.an('array')
 
             })
+        })
 
-            // busca usuario por id 
-            cy.request({ 
+
+    })
+
+    it('Buscar usuário pelo ID com sucesso', () => {
+
+        let token;
+        randomName = faker.person.fullName();
+        randomEmail = faker.internet.email();
+        
+        //steps 
+        cy.cadastroUsuario( randomName, randomEmail, "lwalala", true).then((response)=>{
+            expect(response.status).to.equal(201)
+        })
+
+        cy.efetuarLogin( randomEmail, "lwalala", true).then((response) => {
+            expect(response.status).to.equal(200)
+            expect(response.body).to.be.an('Object')
+
+            token = response.body.accessToken
+
+        cy.promoverAdministrador(token, true).then((response) => {
+            expect(response.status).to.equal(204)})
+
+
+        // Busca
+        cy.request({
                 method: 'GET',
-                url: 'https://raromdb-3c39614e42d4.herokuapp.com/api/users/1',
+                url: '/users/1',
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             }).then((response) => {
                 expect(response.status).to.equal(200)
+
+                // se usar um ID que não existe, o status code ainda é 200. Mas a partir dos outros testes, começa a falhar pois não tá entregando o que foi solicitado. Falta criar um retorno de erro na api para esse caso
                 expect(response.body).to.be.an('Object')
                 expect(response.body).to.have.property('email');
                 expect(response.body).to.have.property('name');
@@ -197,16 +191,17 @@ describe('Consulta usuários', () => {
             })
         })
 
-
     })
+})
 
+
+//todo 
+
+
+describe('Criação de review', ()=>{
 
 })
 
-    // aprimoramentos futuros: 
-        // consulta de usuarios + fixtures
-        // reduzir codigo no arquivo usando cy.commands
-        //  delete user 
-        // update user id 
-        // promote user to critic
-        // promote user to admin 
+describe('Consulta de reviews', ()=>{
+    
+})
