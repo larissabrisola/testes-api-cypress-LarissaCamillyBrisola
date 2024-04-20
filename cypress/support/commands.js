@@ -50,41 +50,16 @@ Cypress.Commands.add('perfilADM', (failOnStatusCode)=>{
     randomEmail = faker.internet.email();
     
 // cadastro valido de usuario 
-    cy.request( {
-        method:'POST', 
-        url: `/users`,
-        body: {
-            "name": randomName,
-            "email": randomEmail,
-            "password": "senha12345"
-        }, failOnStatusCode: failOnStatusCode}
-).then((response)=>{
-
+    cy.cadastroUsuario(randomName, randomEmail, "senha12345", true).then((response)=>{
     email = response.body.email;
     password = 'senha12345'
-
     // login 
-
-    cy.request({
-        method: 'POST', url: `/auth/login`, body: {
-            "email": email, 
-            "password": password
-        }, failOnStatusCode: failOnStatusCode
-    }).then((response)=>{
-        token = response.body.accessToken
+        cy.efetuarLogin( email,  password, true ).then((response)=>{
+            token = response.body.accessToken
         // promovendo usuario a admin
-        cy.request({
-            method: 'PATCH',
-            url: `/users/admin`,
-            headers: {
-                Authorization: `Bearer ${token}`
-            }, failOnStatusCode: failOnStatusCode
-        }).then((response)=>{
-            expect(response.status).to.equal(204)
-
+            cy.promoverAdministrador(token, true).then((response)=>{
+                expect(response.status).to.equal(204)
         })
     })
-
 })
-
 })

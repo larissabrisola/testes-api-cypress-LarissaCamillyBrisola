@@ -2,12 +2,13 @@
 /// <reference types="cypress" />
 import { faker } from '@faker-js/faker';
 
+let token
 
 //public
 describe('Cadastro de usuário', () => {
     let randomName;
     let randomEmail;
-    
+
     beforeEach(() => {
 
         randomName = faker.person.fullName();
@@ -16,12 +17,12 @@ describe('Cadastro de usuário', () => {
 
     it('Cadastro realizado com sucesso', () => {
 
-        cy.cadastroUsuario(randomName, randomEmail, "xuxusjk", true).then((response)=>{
+        cy.cadastroUsuario(randomName, randomEmail, "xuxusjk", true).then((response) => {
             expect(response.status).to.equal(201);
             expect(response.body).to.have.property("id");
             expect(response.body).to.have.property("email");
             expect(response.body).to.have.property("name")
-        
+
         })
     })
 
@@ -44,7 +45,7 @@ describe('Cadastro de usuário', () => {
     })
 
     it('Cadastro não realizado - Formato de email inválido', () => {
-        cy.cadastroUsuario(randomName, "jojocacom", "senha12345", false ).then((response) => {
+        cy.cadastroUsuario(randomName, "jojocacom", "senha12345", false).then((response) => {
             expect(response.status).to.equal(400);
             expect(response.body).to.deep.equal({
                 "message": [
@@ -59,7 +60,7 @@ describe('Cadastro de usuário', () => {
 
     it('Cadastro não realizado - Email já cadastrado ', () => {
 
-        cy.cadastroUsuario( randomName, randomEmail, "lwalala", true)
+        cy.cadastroUsuario(randomName, randomEmail, "lwalala", true)
         // reutilizando o mesmo email acima 
         cy.cadastroUsuario(randomName, randomEmail, "lwalala", false).then((response) => {
 
@@ -76,7 +77,7 @@ describe('Cadastro de usuário', () => {
 
     it('Cadastro não realizado - Campo senha vazio ', () => {
 
-        cy.cadastroUsuario( randomName, randomEmail, "", false).then((response) => {
+        cy.cadastroUsuario(randomName, randomEmail, "", false).then((response) => {
             expect(response.status).to.equal(400)
             expect(response.body).to.deep.equal({
                 "message": [
@@ -92,7 +93,7 @@ describe('Cadastro de usuário', () => {
 
     it('Cadastro não realizado - Campo email vazio ', () => {
 
-        cy.cadastroUsuario( randomName, "", "senha12345", false).then((response) => {
+        cy.cadastroUsuario(randomName, "", "senha12345", false).then((response) => {
             expect(response.status).to.equal(400);
 
             expect(response.body).to.deep.equal({
@@ -111,63 +112,38 @@ describe('Cadastro de usuário', () => {
 // admin funcs
 describe('Consulta usuários', () => {
 
-        it.only('Listar todos usuarios com sucesso - 2', () => {
-   
-            //lista todos usuarios 
-            let token
-            cy.perfilADM(true).then((response)=>{
-           
-                token = response.requestHeaders.Authorization
-        
-                cy.log(token)
-        
-                cy.request({
-                    method: 'GET',
-                    url: '/users',
-                    headers: {
-                        Authorization: `${token}`
-                    }
-                }).then((response) => {
-                    expect(response.status).to.equal(200);
-                    expect(response.body).to.be.an('array')
-        
-                })
+    it('Listar todos usuarios com sucesso', () => {
+
+        //steps
+        cy.perfilADM(true).then((response) => {
+            token = response.requestHeaders.Authorization
+            //lista       
+            cy.request({
+                method: 'GET',
+                url: '/users',
+                headers: {
+                    Authorization: `${token}`
+                }
+            }).then((response) => {
+                expect(response.status).to.equal(200);
+                expect(response.body).to.be.an('array')
+
             })
-        
-       
-            
-
-
+        })
     })
 
     it('Buscar usuário pelo ID com sucesso', () => {
 
-        let token;
-        randomName = faker.person.fullName();
-        randomEmail = faker.internet.email();
-        
-  
-  
-        //steps 
-        cy.cadastroUsuario( randomName, randomEmail, "lwalala", true).then((response)=>{
-            expect(response.status).to.equal(201)
-        })
+        //steps
+        cy.perfilADM(true).then((response) => {
+            token = response.requestHeaders.Authorization
 
-        cy.efetuarLogin( randomEmail, "lwalala", true).then((response) => {
-            expect(response.status).to.equal(200)
-            expect(response.body).to.be.an('Object')
-
-            token = response.body.accessToken
-
-        cy.promoverAdministrador(token, true).then((response) => {
-            expect(response.status).to.equal(204)})
-
-        // Busca
-        cy.request({
+            // busca
+            cy.request({
                 method: 'GET',
                 url: '/users/1',
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `${token}`
                 }
             }).then((response) => {
                 expect(response.status).to.equal(200)
@@ -179,22 +155,20 @@ describe('Consulta usuários', () => {
                 expect(response.body).to.have.property('id');
             })
         })
-
     })
 })
+
 
 
 //todo 
 
 
-describe('Criação de review', ()=>{
+describe('Criação de review', () => {
 
 })
 
-describe('Consulta de reviews', ()=>{
+describe('Consulta de reviews', () => {
 
-
-  
 })
 
 
