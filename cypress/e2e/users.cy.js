@@ -111,43 +111,31 @@ describe('Cadastro de usuário', () => {
 // admin funcs
 describe('Consulta usuários', () => {
 
-    let randomName;
-    let randomEmail;
-
-    it('Listar todos usuarios com sucesso', () => {
-
-        let token;
-        randomName = faker.person.fullName();
-        randomEmail = faker.internet.email();
+        it.only('Listar todos usuarios com sucesso - 2', () => {
+   
+            //lista todos usuarios 
+            let token
+            cy.perfilADM(true).then((response)=>{
+           
+                token = response.requestHeaders.Authorization
         
-        //steps 
-        cy.cadastroUsuario( randomName, randomEmail, "lwalala", true).then((response) => {
-            expect(response.status).to.equal(201)})
-
-        cy.efetuarLogin( randomEmail, "lwalala", true).then((response) => {
-            expect(response.status).to.equal(200)
-            expect(response.body).to.be.an('Object')
-            expect(response.body).to.have.property('accessToken')
-
-            token = response.body.accessToken
-
-        cy.promoverAdministrador(token, true).then((response) => {
-            expect(response.status).to.equal(204)})
-
-        //lista todos usuarios 
-            
-        cy.request({
-                method: 'GET',
-                url: '/users',
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }).then((response) => {
-                expect(response.status).to.equal(200);
-                expect(response.body).to.be.an('array')
-
+                cy.log(token)
+        
+                cy.request({
+                    method: 'GET',
+                    url: '/users',
+                    headers: {
+                        Authorization: `${token}`
+                    }
+                }).then((response) => {
+                    expect(response.status).to.equal(200);
+                    expect(response.body).to.be.an('array')
+        
+                })
             })
-        })
+        
+       
+            
 
 
     })
@@ -158,6 +146,8 @@ describe('Consulta usuários', () => {
         randomName = faker.person.fullName();
         randomEmail = faker.internet.email();
         
+  
+  
         //steps 
         cy.cadastroUsuario( randomName, randomEmail, "lwalala", true).then((response)=>{
             expect(response.status).to.equal(201)
@@ -171,7 +161,6 @@ describe('Consulta usuários', () => {
 
         cy.promoverAdministrador(token, true).then((response) => {
             expect(response.status).to.equal(204)})
-
 
         // Busca
         cy.request({
@@ -203,5 +192,11 @@ describe('Criação de review', ()=>{
 })
 
 describe('Consulta de reviews', ()=>{
-    
+
+
+  
 })
+
+
+
+
