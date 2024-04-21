@@ -106,7 +106,10 @@ describe('Cadastro de usuário', () => {
                 "statusCode": 400
             })
         })
+
+        
     })
+    
 })
 
 // admin funcs
@@ -115,7 +118,7 @@ describe('Consulta usuários', () => {
     it('Listar todos usuarios com sucesso', () => {
 
         //steps
-        cy.perfilADM(true).then((response) => {
+        cy.perfilAdm(true).then((response) => {
             token = response.requestHeaders.Authorization
             //lista       
             cy.request({
@@ -135,7 +138,7 @@ describe('Consulta usuários', () => {
     it('Buscar usuário pelo ID com sucesso', () => {
 
         //steps
-        cy.perfilADM(true).then((response) => {
+        cy.perfilAdm(true).then((response) => {
             token = response.requestHeaders.Authorization
 
             // busca
@@ -156,14 +159,12 @@ describe('Consulta usuários', () => {
             })
         })
     })
-})
-
-
-
-//todo 
+}) 
 
 
 describe('Criação de review', () => {
+    // criar filme 
+    // pegar id (mas ele nao retorna response body??)
 
 })
 
@@ -174,3 +175,4 @@ describe('Consulta de reviews', () => {
 
 
 
+// nao to gostando da organização do código, depois de terminar a atividade, refatorar 

@@ -38,7 +38,7 @@ Cypress.Commands.add('promoverAdministrador', (token, failOnStatusCode)=>{
 
 
 //
-Cypress.Commands.add('perfilADM', (failOnStatusCode)=>{
+Cypress.Commands.add('perfilAdm', (failOnStatusCode)=>{
 
     let randomName;
     let randomEmail;
