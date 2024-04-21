@@ -110,7 +110,7 @@ describe('Cadastro de usuário', () => {
         
     })
     
-    it('Cadastro não realizado - todos os campos estão vazios ', () => {
+    it('Cadastro não realizado - Todos os campos estão vazios ', () => {
 
         cy.cadastroUsuario("", "", "", false).then((response) => {
             expect(response.status).to.equal(400);

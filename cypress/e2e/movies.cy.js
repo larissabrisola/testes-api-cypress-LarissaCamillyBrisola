@@ -55,7 +55,7 @@ describe('Atualização de filmes', () => {
     beforeEach(() => {
         cy.fixture('updateMovie.json').as('updateMovie');
     })
-    it('Atualizar toda informação do filme sucesso', function()  {
+    it('Atualizar toda informação do filme com sucesso', function()  {
 
         cy.log(this.updateMovie);
         cy.perfilAdm(true).then((response) => {
@@ -106,6 +106,8 @@ describe('Consultar filmes', () => {
             expect(response.body).to.have.property('description')
             expect(response.body).to.have.property('durationInMinutes')
             expect(response.body).to.have.property('releaseYear')
+            expect(response.body).to.have.property('reviews')
+
 
         })
 
