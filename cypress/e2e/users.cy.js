@@ -110,6 +110,29 @@ describe('Cadastro de usuário', () => {
         
     })
     
+    it('Cadastro não realizado - todos os campos estão vazios ', () => {
+
+        cy.cadastroUsuario("", "", "", false).then((response) => {
+            expect(response.status).to.equal(400);
+
+            expect(response.body).to.deep.equal({
+                "message": [
+                "name must be longer than or equal to 1 characters",
+                "name should not be empty",
+                "email must be longer than or equal to 1 characters",
+                "email must be an email",
+                "email should not be empty",
+                "password must be longer than or equal to 6 characters",
+                "password should not be empty"
+                ],
+                "error": "Bad Request",
+                "statusCode": 400
+                })
+        })
+
+        
+    })
+    
 })
 
 // admin funcs

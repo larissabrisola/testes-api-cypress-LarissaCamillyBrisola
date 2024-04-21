@@ -26,17 +26,6 @@ describe('Login', () => {
 
     })
 
-    it('Login não realizado - senha inválida', () => {
-        cy.efetuarLogin(randomEmail, "oui", false).then((response) => {
-            expect(response.status).to.equal(401)
-            expect(response.body).to.deep.equal({
-                "message": "Invalid username or password.",
-                "error": "Unauthorized",
-                "statusCode": 401
-            })
-        })
-    })
-
     it('Login não realizado - email não cadastrado', () => {
         cy.efetuarLogin("jbigfanavrillavigne2013@gmail.com", "oioiwoi", false).then((response) => {
             expect(response.status).to.equal(401)
@@ -63,6 +52,17 @@ describe('Login', () => {
     })
 
 
+    it('Login não realizado - senha inválida', () => {
+        cy.efetuarLogin(randomEmail, "oui", false).then((response) => {
+            expect(response.status).to.equal(401)
+            expect(response.body).to.deep.equal({
+                "message": "Invalid username or password.",
+                "error": "Unauthorized",
+                "statusCode": 401
+            })
+        })
+    })
+
     it('Login não realizado - campo senha vazio', () => {
         cy.efetuarLogin("juquinha@gmail.com", "", false).then((response) => {
             expect(response.status).to.equal(400);
@@ -87,6 +87,23 @@ describe('Login', () => {
                 "error": "Bad Request",
                 "statusCode": 400
             }
+            )
+        })
+    })
+
+    
+    it('Login não realizado - todos campos estão vazios', () => {
+        cy.efetuarLogin("", "", false).then((response) => {
+            expect(response.status).to.equal(400);
+            expect(response.body).to.deep.equal({
+                "message": [
+                "email should not be empty",
+                "email must be an email",
+                "password should not be empty"
+                ],
+                "error": "Bad Request",
+                "statusCode": 400
+                }
             )
         })
     })
