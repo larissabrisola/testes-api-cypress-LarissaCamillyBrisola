@@ -36,8 +36,6 @@ Cypress.Commands.add('promoverAdministrador', (token, failOnStatusCode)=>{
 })
 
 
-
-//
 Cypress.Commands.add('perfilAdm', (failOnStatusCode)=>{
 
     let randomName;
@@ -62,4 +60,29 @@ Cypress.Commands.add('perfilAdm', (failOnStatusCode)=>{
         })
     })
 })
+})
+
+Cypress.Commands.add('perfilComum', (failOnStatusCode)=>{
+    
+
+    let randomName;
+    let randomEmail;
+    let email
+    let password 
+
+    let token
+    randomName = faker.person.fullName();
+    randomEmail = faker.internet.email();
+    
+// cadastro valido de usuario 
+    cy.cadastroUsuario(randomName, randomEmail, "senha12345", true).then((response)=>{
+    email = response.body.email;
+    password = 'senha12345'
+        //login  
+        cy.efetuarLogin( email,  password, true ).then((response)=>{
+            token = response.body.accessToken
+})
+})
+
+
 })

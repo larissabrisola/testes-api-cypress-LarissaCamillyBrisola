@@ -1,6 +1,7 @@
 
 let token
 
+//admin funcs
 describe('Cadastro de filmes', () => {
 
     // usar cy.commands aqui
@@ -47,7 +48,7 @@ describe('Cadastro de filmes', () => {
 
 })
 
-
+//admin funcs
 describe('Atualização de filmes', () => {
 // DEPENDENTE EMOCIONAL DA INTEGRIDADE DOS DADOS DA API (SOZINHO NAO CHEGA EM LUGAR NENHUM)
     // aguardando a sessão da terapia (resposta dos instrutores)
@@ -55,6 +56,7 @@ describe('Atualização de filmes', () => {
         cy.fixture('updateMovie.json').as('updateMovie');
     })
     it('Atualizar toda informação do filme sucesso', function()  {
+
         cy.log(this.updateMovie);
         cy.perfilAdm(true).then((response) => {
             token = response.requestHeaders.Authorization
@@ -75,6 +77,8 @@ describe('Atualização de filmes', () => {
     })
 })
 
+
+// public
 describe('Consultar filmes', () => {
 
     it('Listar todos os filmes com sucesso', () => {

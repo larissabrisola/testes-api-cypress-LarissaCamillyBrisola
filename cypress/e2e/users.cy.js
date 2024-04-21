@@ -140,7 +140,6 @@ describe('Consulta usuários', () => {
 
     it('Listar todos usuarios com sucesso', () => {
 
-        //steps
         cy.perfilAdm(true).then((response) => {
             token = response.requestHeaders.Authorization
             //lista       
@@ -160,7 +159,6 @@ describe('Consulta usuários', () => {
 
     it('Buscar usuário pelo ID com sucesso', () => {
 
-        //steps
         cy.perfilAdm(true).then((response) => {
             token = response.requestHeaders.Authorization
 
@@ -185,17 +183,47 @@ describe('Consulta usuários', () => {
 }) 
 
 
+
+// usuario comum
 describe('Criação de review', () => {
-    // criar filme 
-    // pegar id (mas ele nao retorna response body??)
+    // o filme precisa existir 
+        // criar filme // funcao do adm 
+        // pegar id (??)- so se descobre sendo adm 
+    // criar review // usuario 
 
 })
 
+// usuario comum
 describe('Consulta de reviews', () => {
+    it('Listar todos reviews do usuario logado', () => {
 
+        // pra isso precisa ter um filme 
+        // pra isso ele precisa pegar o id do filme - e como usuario comum nao da 
+        // pra dai poder avaliar 
+        // pra dai poder listar o que fez
+
+        
+        // ou so fazer a listagem mesmo vazia ???
+
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+
+            cy.log(token)
+            
+            cy.request({
+                method: 'GET',
+                url: '/users/review/all', 
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then((response) => {
+                expect(response.status).to.equal(200);
+                expect(response.body).to.be.an('array')
+
+            })
+        })
+    })
 })
-
-
 
 
 // nao to gostando da organização do código, depois de terminar a atividade, refatorar 
