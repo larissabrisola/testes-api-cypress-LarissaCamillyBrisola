@@ -403,8 +403,6 @@ describe('Consulta de reviews', () => {
         cy.perfilComum(true).then((response) => {
             token = response.body.accessToken
 
-            cy.log(token)
-
             cy.request({
                 method: 'GET',
                 url: '/users/review/all',
@@ -419,6 +417,61 @@ describe('Consulta de reviews', () => {
             })
         })
     })
+})
+
+
+describe('Manutenção de contas - admin', ()=>{
+
+    before(function () {
+
+        randomName = faker.person.fullName();
+        randomEmail = faker.internet.email();
+        cy.cadastroUsuario(randomName, randomEmail, "senha1234", true).then((response) => {
+            userId = response.body.id
+        })
+    })
+
+    it('Deletar usuario com sucesso', ()=>{
+        
+        cy.perfilAdm(true).then((response)=>{
+            token = response.requestHeaders.Authorization
+    
+    
+            cy.request({
+                method: 'DELETE', 
+                url: '/users/' + userId, 
+                headers: {
+                    Authorization: `${token}`
+                }
+            }).then((response)=>{
+                expect(response.status).to.equal(204)
+            })
+    
+        })
+    })
+
+    it('Atualizar informações do usuario com sucesso', ()=>{
+        cy.fixture('userUpdate').as('userUpdate')
+
+        cy.perfilAdm(true).then(function(response){
+            token = response.requestHeaders.Authorization
+    
+    
+            cy.request({
+                method: 'PUT', 
+                url: '/users/' + userId, 
+                headers: {
+                    Authorization: `${token}`
+                }, 
+                body: this.userUpdate, 
+            }).then((response)=>{
+                expect(response.status).to.equal(200)
+            })
+    
+        })
+    })
+
+
 })
 
 // nao to gostando da organização do código, depois de terminar a atividade, refatorar 
