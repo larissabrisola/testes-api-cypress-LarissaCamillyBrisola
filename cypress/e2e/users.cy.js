@@ -238,6 +238,10 @@ describe('Criação de review', () => {
             movieId = response.body.id
         })
     })
+
+    after(()=>{
+        cy.deletarFilme(movieId)
+    })
     it('criar review com sucesso', () => {
         cy.perfilComum(true).then((response) => {
             token = response.body.accessToken
@@ -584,6 +588,9 @@ describe('Atualizar review', ()=>{
         // quando for fazer a review no mesmo filme, ele vai atualizar pois só pode um review por filme
         })
 
+    after(()=>{
+            cy.deletarFilme(movieId)
+        })
       it('Atualizar Review com sucesso', ()=>{
         // só pode ter uma review por filme, então substitui a review anterior
         // sem cenario de erro pois o caminho é o mesmo de criação, dai já tem acima 

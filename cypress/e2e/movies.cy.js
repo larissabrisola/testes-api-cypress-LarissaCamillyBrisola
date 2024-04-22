@@ -3,7 +3,10 @@ let token
 
 //admin funcs
 describe('Cadastro de filmes', () => {
-
+    let movieId;
+    after(()=>{
+        cy.deletarFilme(movieId)
+    })
     it('Cadastro filme - sucesso', function ()  {
         cy.fixture('filmeParaCadastro').as('cadastroFilme')
 
@@ -18,6 +21,7 @@ describe('Cadastro de filmes', () => {
                     Authorization: `${token}`
                 }
             }).then((response) => {
+                movieId = response.body.id
                 expect(response.status).to.equal(201);
                 expect(response.body).to.have.property('id');
                 expect(response.body).to.have.property('title')
