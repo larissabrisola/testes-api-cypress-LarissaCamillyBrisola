@@ -393,8 +393,34 @@ describe('Criação de review', () => {
             })
         })
     })
+    it('criar review - bad request - score só pode receber os valores 1,2,3,4,5', () => {
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'POST',
+                url: '/users/review',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: {
+                    "movieId": movieId,
+                    "score": 6,
+                    "reviewText": "lorem ipsum"
+                }, failOnStatusCode: false
+            }).then((response)=>{
+                expect(response.status).to.equal(400);
+                expect(response.body).to.deep.equal({
+                    "message": "Score should be between 1 and 5",
+                    "error": "Bad Request",
+                    "statusCode": 400
+                    })
+            })
+        })
+    })
 
 })
+
 
 // usuario comum
 describe('Consulta de reviews', () => {
@@ -530,5 +556,56 @@ describe('Manutenção de conta - usuario comum', ()=>{
 
 })
 
+// usuario comum 
+describe('Atualizar review', ()=>{
+    let movieId
+    before(()=>{
+        cy.cadastrarFilme().then((response) => {
+            movieId = response.body.id
+        })
+
+        // criando review pro filme
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'POST',
+                url: '/users/review',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: {
+                    "movieId": movieId,
+                    "score": 3,
+                    "reviewText": "lorem ipsum"
+                }
+            })
+        })
+        // quando for fazer a review no mesmo filme, ele vai atualizar pois só pode um review por filme
+        })
+
+      it('Atualizar Review com sucesso', ()=>{
+        // só pode ter uma review por filme, então substitui a review anterior
+        // sem cenario de erro pois o caminho é o mesmo de criação, dai já tem acima 
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'POST',
+                url: '/users/review',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: {
+                    "movieId": movieId,
+                    "score": 4,
+                    "reviewText": "loremssssssssssssss ipsum"
+                }
+            }).then((response)=>{
+                expect(response.status).to.equal(201);
+            })
+        })
+      })
+    })
 
 // nao to gostando da organização do código, depois de terminar a atividade, refatorar 
