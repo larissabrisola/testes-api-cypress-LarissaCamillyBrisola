@@ -86,3 +86,31 @@ Cypress.Commands.add('perfilComum', (failOnStatusCode)=>{
 
 
 })
+
+// filme 
+
+Cypress.Commands.add('cadastrarFilme', function (){
+    cy.fixture('filmeParaCadastro.json').as('cadastroFilme')
+    let token
+    cy.perfilAdm(true).then((response) => {
+        token = response.requestHeaders.Authorization
+        //lista       
+        cy.request({
+            method: 'POST',
+            url: '/movies',
+            headers: {
+                Authorization: `${token}`
+            }, 
+            body: this.cadastroFilme
+        }).then((response) => {
+                expect(response.status).to.equal(201);
+                expect(response.body).to.have.property('id');
+                expect(response.body).to.have.property('title')
+                expect(response.body).to.have.property('description')
+                expect(response.body).to.have.property('durationInMinutes')
+                expect(response.body).to.have.property('releaseYear')
+                expect(response.body).to.have.property('genre')
+        })
+    })
+})
+

@@ -53,8 +53,8 @@ describe('Cadastro de usuário', () => {
             })
         })
 
-        
-    })  
+
+    })
     it('Cadastro não realizado - Campo name vazio ', () => {
 
         cy.cadastroUsuario('', randomEmail, "senha12345", false).then((response) => {
@@ -70,8 +70,8 @@ describe('Cadastro de usuário', () => {
             })
         })
 
-        
-    })  
+
+    })
     it('Cadastro não realizado - Todos os campos vazios ', () => {
 
         cy.cadastroUsuario("", "", "", false).then((response) => {
@@ -79,21 +79,21 @@ describe('Cadastro de usuário', () => {
 
             expect(response.body).to.deep.equal({
                 "message": [
-                "name must be longer than or equal to 1 characters",
-                "name should not be empty",
-                "email must be longer than or equal to 1 characters",
-                "email must be an email",
-                "email should not be empty",
-                "password must be longer than or equal to 6 characters",
-                "password should not be empty"
+                    "name must be longer than or equal to 1 characters",
+                    "name should not be empty",
+                    "email must be longer than or equal to 1 characters",
+                    "email must be an email",
+                    "email should not be empty",
+                    "password must be longer than or equal to 6 characters",
+                    "password should not be empty"
                 ],
                 "error": "Bad Request",
                 "statusCode": 400
-                })
+            })
         })
 
-        
-    }) 
+
+    })
     it('Cadastro não realizado - Senha curta demais (minimo 6 caracteres)', () => {
 
         cy.cadastroUsuario(randomName, randomEmail, "oui", false).then((response) => {
@@ -114,14 +114,14 @@ describe('Cadastro de usuário', () => {
         cy.cadastroUsuario(randomName, randomEmail, 1234, false).then((response) => {
 
             expect(response.status).to.equal(400);
-            expect(response.body).to.deep.equal( {
+            expect(response.body).to.deep.equal({
                 "message": [
-                "password must be longer than or equal to 6 and shorter than or equal to 12 characters",
-                "password must be a string"
+                    "password must be longer than or equal to 6 and shorter than or equal to 12 characters",
+                    "password must be a string"
                 ],
                 "error": "Bad Request",
                 "statusCode": 400
-                })
+            })
         })
 
     })
@@ -141,14 +141,14 @@ describe('Cadastro de usuário', () => {
     it('Cadastro não realizado - Formato de name inválido', () => {
         cy.cadastroUsuario(123, randomEmail, "senha12345", false).then((response) => {
             expect(response.status).to.equal(400);
-            expect(response.body).to.deep.equal( {
+            expect(response.body).to.deep.equal({
                 "message": [
-                "name must be longer than or equal to 1 and shorter than or equal to 100 characters",
-                "name must be a string"
+                    "name must be longer than or equal to 1 and shorter than or equal to 100 characters",
+                    "name must be a string"
                 ],
                 "error": "Bad Request",
                 "statusCode": 400
-                })
+            })
 
         })
     })
@@ -168,14 +168,13 @@ describe('Cadastro de usuário', () => {
         })
     })
 })
-
 // admin funcs
 describe('Consulta usuários', () => {
 
-    before(function(){
+    before(function () {
         randomName = faker.person.fullName();
         randomEmail = faker.internet.email();
-        cy.cadastroUsuario(randomName, randomEmail, "senha1234", true).then((response)=>{
+        cy.cadastroUsuario(randomName, randomEmail, "senha1234", true).then((response) => {
             userId = response.body.id
         })
     })
@@ -184,7 +183,7 @@ describe('Consulta usuários', () => {
 
         cy.perfilAdm(true).then((response) => {
             token = response.requestHeaders.Authorization
-            
+
             // busca
             cy.request({
                 method: 'GET',
@@ -226,48 +225,196 @@ describe('Consulta usuários', () => {
         })
     })
 
-    
-}) 
+
+})
 
 // usuario comum can
 describe('Criação de review', () => {
 
-    it('criar review com sucesso', ()=>{
-        
+    let movieId
+
+    before(() => {
+        cy.cadastrarFilme().then((response) => {
+            movieId = response.body.id
+        })
     })
-    // o filme precisa existir 
-        // criar filme // funcao do adm 
-        // pegar id (??)- so se descobre sendo adm 
-    // criar review // usuario 
+    it('criar review com sucesso', () => {
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'POST',
+                url: '/users/review',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: {
+                    "movieId": movieId,
+                    "score": 3,
+                    "reviewText": "lorem ipsum"
+                }
+            })
+        })
+    })
+    it('criar review com sucesso apenas com textReview vazio', () => {
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'POST',
+                url: '/users/review',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: {
+                    "movieId": movieId,
+                    "score": 3,
+                    "reviewText": ''
+                }, failOnStatusCode: true
+            }).then((response)=>{
+                expect(response.status).to.equal(201)
+            })
+        })
+    })
+    it('criar review - bad request - id vazio', () => {
+
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'POST',
+                url: '/users/review',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: {
+                    "movieId": '',
+                    "score": 3,
+                    "reviewText": "lorem ipsum"
+                }, failOnStatusCode: false
+            }).then((response)=>{
+                expect(response.status).to.equal(400)
+                expect(response.body).to.deep.equal( {
+                    "message": [
+                    "movieId must be an integer number",
+                    "movieId should not be empty"
+                    ],
+                    "error": "Bad Request",
+                    "statusCode": 400
+                    })
+            })
+        })
+    })
+    it('criar review - bad request - score vazio', () => {
+
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'POST',
+                url: '/users/review',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: {
+                    "movieId": movieId,
+                    "score": '',
+                    "reviewText": "lorem ipsum"
+                }, failOnStatusCode: false
+            }).then((response)=>{
+                expect(response.status).to.equal(400)
+                expect(response.body).to.deep.equal( {
+                    "message": [
+                    "score must be a number conforming to the specified constraints",
+                    "score should not be empty"
+                    ],
+                    "error": "Bad Request",
+                    "statusCode": 400
+                    })
+            })
+        })
+    })
+    it('criar review - bad request - reviewText formato inválido', () => {
+        // review vazio funciona
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'POST',
+                url: '/users/review',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: {
+                    "movieId": movieId,
+                    "score": 3,
+                    "reviewText": 234,
+                }, failOnStatusCode: false
+            }).then((response)=>{
+                expect(response.status).to.equal(400)
+                expect(response.body).to.deep.equal( {
+                    "message": [
+                    "reviewText must be a string"
+                    ],
+                    "error": "Bad Request",
+                    "statusCode": 400
+                    })
+            })
+        })
+    })
+    it('criar review - bad request - todos campos vazios', () => {
+        // review vazio funciona
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'POST',
+                url: '/users/review',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: {
+                    "movieId": '',
+                    "score": '',
+                    "reviewText": '',
+                }, failOnStatusCode: false
+            }).then((response)=>{
+                expect(response.status).to.equal(400)
+                expect(response.body).to.deep.equal({
+                    "message": [
+                    "movieId must be an integer number",
+                    "movieId should not be empty",
+                    "score must be a number conforming to the specified constraints",
+                    "score should not be empty"
+                    ],
+                    "error": "Bad Request",
+                    "statusCode": 400
+                    })
+            })
+        })
+    })
 
 })
 
 // usuario comum
 describe('Consulta de reviews', () => {
     it('Listar todos reviews do usuario logado com sucesso', () => {
-
-        // pra isso precisa ter um filme 
-        // pra isso ele precisa pegar o id do filme - e como usuario comum nao da 
-        // pra dai poder avaliar 
-        // pra dai poder listar o que fez
-
         
-        // ou so fazer a listagem mesmo vazia ???
-
         cy.perfilComum(true).then((response) => {
             token = response.body.accessToken
 
             cy.log(token)
-            
+
             cy.request({
                 method: 'GET',
-                url: '/users/review/all', 
+                url: '/users/review/all',
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             }).then((response) => {
                 expect(response.status).to.equal(200);
                 expect(response.body).to.be.an('array')
+                // esse usuario nunca criou review pois ele acabou de nascer entao vai ser array vaziokkkmas ta retornandooo
 
             })
         })

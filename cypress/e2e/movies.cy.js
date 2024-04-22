@@ -5,7 +5,7 @@ let token
 describe('Cadastro de filmes', () => {
 
     it('Cadastro filme - sucesso', function ()  {
-        cy.fixture('cadastroFilme').as('cadastroFilme')
+        cy.fixture('filmeParaCadastro').as('cadastroFilme')
 
         cy.perfilAdm(true).then((response) => {
             token = response.requestHeaders.Authorization
@@ -380,7 +380,7 @@ describe('Cadastro de filmes', () => {
 
 //admin funcs
 describe('Atualização de filmes', () => {
-
+    
 })
 
 
