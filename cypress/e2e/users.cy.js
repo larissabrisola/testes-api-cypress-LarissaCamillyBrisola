@@ -3,12 +3,11 @@
 import { faker } from '@faker-js/faker';
 
 let token
-
+let userId
+let randomName;
+let randomEmail;
 //public
 describe('Cadastro de usuário', () => {
-    let randomName;
-    let randomEmail;
-
     beforeEach(() => {
 
         randomName = faker.person.fullName();
@@ -138,6 +137,44 @@ describe('Cadastro de usuário', () => {
 // admin funcs
 describe('Consulta usuários', () => {
 
+
+    before(function(){
+        cy.cadastroUsuario(randomName, randomEmail, "senha1234", true).then((response)=>{
+            userId = response.body.id
+
+            cy.log(userId)
+
+        })
+        cy.efetuarLogin( randomEmail, "senha1234", true )
+    })
+
+    it('Buscar usuário pelo ID com sucesso', () => {
+
+        cy.perfilAdm(true).then((response) => {
+            token = response.requestHeaders.Authorization
+            
+            // busca
+            cy.request({
+                method: 'GET',
+                url: '/users/' + userId,
+                headers: {
+                    Authorization: `${token}`
+                }
+            }).then((response) => {
+                expect(response.status).to.equal(200)
+
+                // se usar um ID que não existe, o status code ainda é 200. Mas a partir dos outros testes, começa a falhar pois não tá entregando o que foi solicitado. Falta criar um retorno de erro na api para esse caso
+                expect(response.body).to.be.an('Object')
+                expect(response.body).to.have.property('id');
+                expect(response.body).to.have.property('email');
+                expect(response.body).to.have.property('name');
+                expect(response.body).to.have.property('type');
+                expect(response.body).to.have.property('active');
+
+            })
+        })
+    })
+
     it('Listar todos usuarios com sucesso', () => {
 
         cy.perfilAdm(true).then((response) => {
@@ -157,29 +194,7 @@ describe('Consulta usuários', () => {
         })
     })
 
-    it('Buscar usuário pelo ID com sucesso', () => {
-
-        cy.perfilAdm(true).then((response) => {
-            token = response.requestHeaders.Authorization
-
-            // busca
-            cy.request({
-                method: 'GET',
-                url: '/users/1',
-                headers: {
-                    Authorization: `${token}`
-                }
-            }).then((response) => {
-                expect(response.status).to.equal(200)
-
-                // se usar um ID que não existe, o status code ainda é 200. Mas a partir dos outros testes, começa a falhar pois não tá entregando o que foi solicitado. Falta criar um retorno de erro na api para esse caso
-                expect(response.body).to.be.an('Object')
-                expect(response.body).to.have.property('email');
-                expect(response.body).to.have.property('name');
-                expect(response.body).to.have.property('id');
-            })
-        })
-    })
+    
 }) 
 
 
