@@ -6,10 +6,9 @@ let token
 let userId
 let randomName;
 let randomEmail;
-//public
+
 describe('Cadastro de usuário', () => {
     beforeEach(() => {
-
         randomName = faker.person.fullName();
         randomEmail = faker.internet.email();
     })
@@ -24,56 +23,6 @@ describe('Cadastro de usuário', () => {
 
         })
     })
-
-    it('Cadastro não realizado - Senha curta demais (minimo 6 caracteres)', () => {
-
-        cy.cadastroUsuario(randomName, randomEmail, "oui", false).then((response) => {
-
-            expect(response.status).to.equal(400);
-            expect(response.body).to.deep.equal({
-                "message": [
-                    "password must be longer than or equal to 6 characters"
-                ],
-                "error": "Bad Request",
-                "statusCode": 400
-            })
-
-
-        })
-
-    })
-
-    it('Cadastro não realizado - Formato de email inválido', () => {
-        cy.cadastroUsuario(randomName, "jojocacom", "senha12345", false).then((response) => {
-            expect(response.status).to.equal(400);
-            expect(response.body).to.deep.equal({
-                "message": [
-                    "email must be an email"
-                ],
-                "error": "Bad Request",
-                "statusCode": 400
-            })
-
-        })
-    })
-
-    it('Cadastro não realizado - Email já cadastrado ', () => {
-
-        cy.cadastroUsuario(randomName, randomEmail, "lwalala", true)
-        // reutilizando o mesmo email acima 
-        cy.cadastroUsuario(randomName, randomEmail, "lwalala", false).then((response) => {
-
-            expect(response.status).to.equal(409);
-            expect(response.body).to.deep.equal(
-                {
-                    "message": "Email already in use",
-                    "error": "Conflict",
-                    "statusCode": 409
-                })
-        })
-
-    })
-
     it('Cadastro não realizado - Campo senha vazio ', () => {
 
         cy.cadastroUsuario(randomName, randomEmail, "", false).then((response) => {
@@ -88,8 +37,6 @@ describe('Cadastro de usuário', () => {
             })
         })
     })
-
-
     it('Cadastro não realizado - Campo email vazio ', () => {
 
         cy.cadastroUsuario(randomName, "", "senha12345", false).then((response) => {
@@ -107,9 +54,25 @@ describe('Cadastro de usuário', () => {
         })
 
         
-    })
-    
-    it('Cadastro não realizado - Todos os campos estão vazios ', () => {
+    })  
+    it('Cadastro não realizado - Campo name vazio ', () => {
+
+        cy.cadastroUsuario('', randomEmail, "senha12345", false).then((response) => {
+            expect(response.status).to.equal(400);
+
+            expect(response.body).to.deep.equal({
+                "message": [
+                    "name must be longer than or equal to 1 characters",
+                    "name should not be empty"
+                ],
+                "error": "Bad Request",
+                "statusCode": 400
+            })
+        })
+
+        
+    })  
+    it('Cadastro não realizado - Todos os campos vazios ', () => {
 
         cy.cadastroUsuario("", "", "", false).then((response) => {
             expect(response.status).to.equal(400);
@@ -130,22 +93,91 @@ describe('Cadastro de usuário', () => {
         })
 
         
+    }) 
+    it('Cadastro não realizado - Senha curta demais (minimo 6 caracteres)', () => {
+
+        cy.cadastroUsuario(randomName, randomEmail, "oui", false).then((response) => {
+
+            expect(response.status).to.equal(400);
+            expect(response.body).to.deep.equal({
+                "message": [
+                    "password must be longer than or equal to 6 characters"
+                ],
+                "error": "Bad Request",
+                "statusCode": 400
+            })
+        })
+
     })
-    
+    it('Cadastro não realizado - Formato de senha inválido (minimo 6 caracteres)', () => {
+
+        cy.cadastroUsuario(randomName, randomEmail, 1234, false).then((response) => {
+
+            expect(response.status).to.equal(400);
+            expect(response.body).to.deep.equal( {
+                "message": [
+                "password must be longer than or equal to 6 and shorter than or equal to 12 characters",
+                "password must be a string"
+                ],
+                "error": "Bad Request",
+                "statusCode": 400
+                })
+        })
+
+    })
+    it('Cadastro não realizado - Formato de email inválido', () => {
+        cy.cadastroUsuario(randomName, "jojocacom", "senha12345", false).then((response) => {
+            expect(response.status).to.equal(400);
+            expect(response.body).to.deep.equal({
+                "message": [
+                    "email must be an email"
+                ],
+                "error": "Bad Request",
+                "statusCode": 400
+            })
+
+        })
+    })
+    it('Cadastro não realizado - Formato de name inválido', () => {
+        cy.cadastroUsuario(123, randomEmail, "senha12345", false).then((response) => {
+            expect(response.status).to.equal(400);
+            expect(response.body).to.deep.equal( {
+                "message": [
+                "name must be longer than or equal to 1 and shorter than or equal to 100 characters",
+                "name must be a string"
+                ],
+                "error": "Bad Request",
+                "statusCode": 400
+                })
+
+        })
+    })
+    it('Cadastro não realizado - Email já cadastrado ', () => {
+
+        cy.cadastroUsuario(randomName, randomEmail, "lwalala", true)
+        // reutilizando o mesmo email acima 
+        cy.cadastroUsuario(randomName, randomEmail, "lwalala", false).then((response) => {
+
+            expect(response.status).to.equal(409);
+            expect(response.body).to.deep.equal(
+                {
+                    "message": "Email already in use",
+                    "error": "Conflict",
+                    "statusCode": 409
+                })
+        })
+    })
 })
 
 // admin funcs
 describe('Consulta usuários', () => {
 
-
     before(function(){
+        randomName = faker.person.fullName();
+        randomEmail = faker.internet.email();
         cy.cadastroUsuario(randomName, randomEmail, "senha1234", true).then((response)=>{
             userId = response.body.id
-
-            cy.log(userId)
-
         })
-        cy.efetuarLogin( randomEmail, "senha1234", true )
     })
 
     it('Buscar usuário pelo ID com sucesso', () => {
@@ -197,10 +229,12 @@ describe('Consulta usuários', () => {
     
 }) 
 
-
-
-// usuario comum
+// usuario comum can
 describe('Criação de review', () => {
+
+    it('criar review com sucesso', ()=>{
+        
+    })
     // o filme precisa existir 
         // criar filme // funcao do adm 
         // pegar id (??)- so se descobre sendo adm 
@@ -210,7 +244,7 @@ describe('Criação de review', () => {
 
 // usuario comum
 describe('Consulta de reviews', () => {
-    it('Listar todos reviews do usuario logado', () => {
+    it('Listar todos reviews do usuario logado com sucesso', () => {
 
         // pra isso precisa ter um filme 
         // pra isso ele precisa pegar o id do filme - e como usuario comum nao da 
