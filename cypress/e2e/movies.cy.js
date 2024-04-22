@@ -28,6 +28,7 @@ describe('Cadastro de filmes', () => {
 
             })
         })
+        
     })
 
     it('Cadastro filme - bad request - title vazio', ()=>{
@@ -380,12 +381,49 @@ describe('Cadastro de filmes', () => {
 
 //admin funcs
 describe('Atualização de filmes', () => {
+    let movieId
     
+    before(()=>{
+        cy.cadastrarFilme().then((response)=>{
+            movieId = response.body.id
+            cy.log(response.body)
+        })
+    })
+
+    after(()=>{
+        cy.deletarFilme(movieId)
+    })
+    it('Atualizar filme com sucesso', function (){
+        cy.fixture('updateMovie').as('updateMovie')
+
+        cy.perfilAdm(true).then((response)=>{
+            token = response.requestHeaders.Authorization
+
+            cy.request({
+                method: 'PUT', 
+                url: '/movies/' + movieId,
+                body:  this.updateMovie, 
+                headers: {
+                    Authorization: ` ${token}`
+                }
+            })
+        })
+    })
 })
 
 
 // public
 describe('Consultar filmes', () => {
+    let movieId
+
+    before(()=>{
+        cy.cadastrarFilme().then((response)=>{
+            movieId = response.body.id
+        })
+    })
+    after(()=>{
+        cy.deletarFilme(movieId)
+    })
 
     it('Listar todos os filmes com sucesso', () => {
         cy.request('GET', '/movies').then((response) => {
@@ -396,11 +434,11 @@ describe('Consultar filmes', () => {
         })
     })
 
-    it('Pesquisar filme por ID com sucesso', () => {
+    it.only('Pesquisar filme por ID com sucesso', () => {
 
         cy.request({
             method: 'GET',
-            url: `/movies/22`
+            url: `/movies/` + movieId
 
         }).then((response) => {
             expect(response.status).to.equal(200)

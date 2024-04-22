@@ -114,3 +114,18 @@ Cypress.Commands.add('cadastrarFilme', function (){
     })
 })
 
+Cypress.Commands.add('deletarFilme', function(movieId){
+    let token
+
+    cy.perfilAdm(true).then((response)=>{
+        token = response.requestHeaders.Authorization
+
+        cy.request({
+            method: 'DELETE', 
+            url: '/movies/' + movieId, 
+            headers: {
+                Authorization: `${token}`
+            }
+        })
+    })
+})
