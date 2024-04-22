@@ -9,7 +9,7 @@ especiais.
 incluindo os dados do usuário que criou a avaliação.
 
 
-Sem login: 
+Todos (até não logados): 
 - Pode se cadastrar
 - Consulta de filmes é aberta - Pode listar todos os filmes cadastrados e buscar por titulo/ ID
 
