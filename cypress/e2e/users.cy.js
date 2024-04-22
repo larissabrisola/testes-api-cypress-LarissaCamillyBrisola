@@ -421,5 +421,4 @@ describe('Consulta de reviews', () => {
     })
 })
 
-
 // nao to gostando da organização do código, depois de terminar a atividade, refatorar 

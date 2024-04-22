@@ -393,6 +393,7 @@ describe('Atualização de filmes', () => {
     after(()=>{
         cy.deletarFilme(movieId)
     })
+    
     it('Atualizar filme com sucesso', function (){
         cy.fixture('updateMovie').as('updateMovie')
 
@@ -434,7 +435,7 @@ describe('Consultar filmes', () => {
         })
     })
 
-    it.only('Pesquisar filme por ID com sucesso', () => {
+    it('Pesquisar filme por ID com sucesso', () => {
 
         cy.request({
             method: 'GET',
@@ -463,9 +464,9 @@ describe('Consultar filmes', () => {
         }).then((response) => {
             expect(response.status).to.equal(200)
             expect(response.body).to.be.an('array')
-            // ta cru, depois adiciono testes
-
             // nao criei caso de erro pois mesmo colocando um titulo que nao existe, a api retorna 200 pois a chamada foi feita
+            // como tem muitos filmes com mesmo titulo, ele sempre retorna array e nao entra nas info do filme
+            // talvez se nao usar fixture e sim o fakerjs pro titulo, posso tentar resgatar depois e fazer a busca dinamic
         })
     })
 
