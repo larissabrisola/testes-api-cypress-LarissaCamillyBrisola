@@ -474,4 +474,60 @@ describe('Manutenção de contas - admin', ()=>{
 
 })
 
+
+describe.only('Manutenção de conta - usuario comum', ()=>{
+
+
+    beforeEach(function () {
+        randomName = faker.person.fullName();
+        randomEmail = faker.internet.email();
+        cy.cadastroUsuario(randomName, randomEmail, "senha1234", true).then((response) => {
+            userId = response.body.id
+        })
+    })
+
+
+    it('Inativar minha conta com sucesso', ()=>{
+        cy.perfilComum(true).then((response)=>{
+            token = response.body.accessToken
+    
+    
+            cy.request({
+                method: 'PATCH', 
+                url: '/users/inactivate', 
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then((response)=>{
+                expect(response.status).to.equal(204)
+            })
+    
+        })
+    })
+
+    it('Atualizar minhas informações com sucesso', ()=>{
+
+        cy.efetuarLogin(randomEmail, "senha1234", true).then(function(response){
+            
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'PUT', 
+                url: '/users/' + userId, 
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }, 
+                body: {
+                    "name": "Caio",
+                    "password": "senha12345"
+                }, 
+            }).then((response)=>{
+                expect(response.status).to.equal(200)
+            })
+    
+        })
+    })
+
+
+})
 // nao to gostando da organização do código, depois de terminar a atividade, refatorar 
