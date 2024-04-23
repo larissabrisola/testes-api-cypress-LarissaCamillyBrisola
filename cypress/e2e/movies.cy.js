@@ -36,6 +36,31 @@ describe('Cadastro de filmes', () => {
 
     })
 
+    it('Cadastro filme - - erro - usuario COMUM não tem autorização ', function () {
+        cy.fixture('filmeParaCadastro').as('cadastroFilme')
+
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+            // procurar api para randomizar
+            cy.request({
+                method: 'POST',
+                url: `/movies`,
+                body: this.cadastroFilme,
+                headers: {
+                    Authorization: `${token}`
+                }, failOnStatusCode: false
+            }).then((response)=>{
+                expect(response.status).to.equal(401);
+                expect(response.body).to.deep.equal( {
+                    "message": "Access denied.",
+                    "error": "Unauthorized",
+                    "statusCode": 401
+                  })
+            })
+        })
+
+    })
+
     it('Cadastro filme - bad request - title vazio', () => {
         cy.perfilAdm(true).then((response) => {
             token = response.requestHeaders.Authorization
@@ -415,6 +440,75 @@ describe('Atualização de filmes', () => {
             })
         })
     })
+    it('Atualizar filme - erro - usuario COMUM não tem autorização', function () {
+        cy.fixture('updateMovie').as('updateMovie')
+
+        cy.perfilComum().then((response) => {
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'PUT',
+                url: '/movies/' + movieId,
+                body: this.updateMovie,
+                headers: {
+                    Authorization: ` ${token}`
+                }, failOnStatusCode: false
+            }).then((response)=>{
+                expect(response.status).to.equal(401);
+                expect(response.body).to.deep.equal({
+                    "message": "Access denied.",
+                    "error": "Unauthorized",
+                    "statusCode": 401
+                    })
+            })
+        })
+    })
+    it('Atualizar filme - bad request - string text', function () {
+        cy.fixture('updateMovie').as('updateMovie')
+
+        cy.perfilAdm(true).then((response) => {
+            token = response.requestHeaders.Authorization
+
+            cy.request({
+                method: 'PUT',
+                url: '/movies/' + 'asda',
+                body: this.updateMovie,
+                headers: {
+                    Authorization: ` ${token}`
+                }, failOnStatusCode: false
+            }).then((response)=>{
+                expect(response.status).to.equal(400)
+                expect(response.body).to.deep.equal( {
+                    "message": "Validation failed (numeric string is expected)",
+                    "error": "Bad Request",
+                    "statusCode": 400
+                    })
+            })
+        })
+    })
+    it('Atualizar filme - bad request - id vazio', function () {
+        cy.fixture('updateMovie').as('updateMovie')
+
+        cy.perfilAdm(true).then((response) => {
+            token = response.requestHeaders.Authorization
+
+            cy.request({
+                method: 'PUT',
+                url: '/movies/' + '',
+                body: this.updateMovie,
+                headers: {
+                    Authorization: ` ${token}`
+                }, failOnStatusCode: false
+            }).then((response)=>{
+                expect(response.status).to.equal(404);
+                expect(response.body).to.deep.equal( {
+                    "message": "Cannot PUT /api/movies/",
+                    "error": "Not Found",
+                    "statusCode": 404
+                    })
+            })
+        })
+    })
 })
 
 
@@ -463,13 +557,10 @@ describe('Consultar filmes', () => {
                 expect(response.body).to.have.property('genre')
 
             })
-        })
+        })})
 
-    })
-    
     after(() => {
-        cy.deletarFilme(movieId)
-    })
+        cy.deletarFilme(movieId)})
 
     it('Listar todos os filmes com sucesso', () => {
         cy.request('GET', '/movies').then((response) => {
@@ -502,6 +593,24 @@ describe('Consultar filmes', () => {
         })
 
     })
+    it('Pesquisar filme por ID - bad request - string text', () => {
+
+        cy.request({
+            method: 'GET',
+            url: `/movies/` + 'asad',
+             failOnStatusCode: false
+        }).then((response) => {
+            expect(response.status).to.equal(400)
+            expect(response.body).to.deep.equal( {
+                "message": "Validation failed (numeric string is expected)",
+                "error": "Bad Request",
+                "statusCode": 400
+                })
+
+            
+        })
+
+    })
 
     it('Pesquisar filme por Titulo com sucesso', () => {
         cy.request({
@@ -519,8 +628,9 @@ describe('Consultar filmes', () => {
             expect(response.body[0]).to.have.property('releaseYear')
             expect(response.body[0]).to.have.property('totalRating')
             // nao criei caso de erro pois mesmo colocando um titulo que nao existe, a api retorna 200 pois a chamada foi feita
-
+            // & aceita qualquer tipo de dado
         })
+
     })
 })
 

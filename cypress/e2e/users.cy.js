@@ -222,6 +222,30 @@ describe('Consulta usuários', () => {
         })
     })
 
+    it('Buscar usuário pelo ID - erro - usuario COMUM não tem autorização', () => {
+
+        cy.perfilComum().then((response) => {
+            token = response.body.accessToken
+
+            // busca
+            cy.request({
+                method: 'GET',
+                url: '/users/' + userId,
+                headers: {
+                    Authorization: `${token}`
+                }, failOnStatusCode: false
+            }).then((response) => {
+                expect(response.status).to.equal(401)
+                expect(response.body).to.deep.equal( {
+                    "message": "Access denied.",
+                    "error": "Unauthorized",
+                    "statusCode": 401
+                    })
+               
+            })
+        })
+    })
+
     it('Listar todos usuarios com sucesso', () => {
 
         cy.perfilAdm(true).then((response) => {
@@ -236,6 +260,29 @@ describe('Consulta usuários', () => {
             }).then((response) => {
                 expect(response.status).to.equal(200);
                 expect(response.body).to.be.an('array')
+
+            })
+        })
+    })
+
+    it('Listar todos usuarios - erro - usuario COMUM não tem autorização', () => {
+
+        cy.perfilComum().then((response) => {
+            token = response.body.accessToken
+            //lista       
+            cy.request({
+                method: 'GET',
+                url: '/users',
+                headers: {
+                    Authorization: `${token}`
+                }, failOnStatusCode: false
+            }).then((response) => {
+                expect(response.status).to.equal(401);
+                expect(response.body).to.deep.equal({
+                    "message": "Access denied.",
+                    "error": "Unauthorized",
+                    "statusCode": 401
+                    })
 
             })
         })
@@ -492,8 +539,28 @@ describe('Criação de review', () => {
             })
         })
     })
+    it('criar review - erro - usuario não está logado ', () => {
+      
+            cy.request({
+                method: 'POST',
+                url: '/users/review',
+                body: {
+                    "movieId": movieId,
+                    "score": 3,
+                    "reviewText": "lorem ipsum"
+                }, failOnStatusCode: false
+            }).then((response)=>{
+                expect(response.status).to.equal(401);
+                expect(response.body).to.deep.equal( {
+                    "message": "Access denied.",
+                    "error": "Unauthorized",
+                    "statusCode": 401
+                    })
+            })
+        })
+    })
 
-})
+
 
 
 // usuario comum
@@ -517,7 +584,25 @@ describe('Consulta de reviews', () => {
             })
         })
     })
-})
+
+    it('Listar reviews - erro - usuario não logado', () => {
+        
+            cy.request({
+                method: 'GET',
+                url: '/users/review/all', failOnStatusCode:false
+            } ).then((response) => {
+                expect(response.status).to.equal(401);
+                expect(response.body).to.deep.equal({
+                    "message": "Access denied.",
+                    "error": "Unauthorized",
+                    "statusCode": 401
+                    })
+                // esse usuario nunca criou review pois ele acabou de nascer entao vai ser array vaziokkkmas ta retornandooo
+
+            })
+        })
+    })
+
 
 
 describe('Manutenção de contas - admin', ()=>{
