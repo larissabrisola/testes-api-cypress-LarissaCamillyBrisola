@@ -465,7 +465,6 @@ describe('Consultar filmes', () => {
             })
         })
 
-
     })
     
     after(() => {
@@ -482,8 +481,6 @@ describe('Consultar filmes', () => {
             expect(response.body[0]).to.have.property('durationInMinutes')
             expect(response.body[0]).to.have.property('releaseYear')
             expect(response.body[0]).to.have.property('totalRating')
-
-
         })
     })
 
