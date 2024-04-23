@@ -109,6 +109,22 @@ describe('Cadastro de usuário', () => {
         })
 
     })
+
+    it('Cadastro não realizado - Senha longa demais (maximo 12 caracteres)', () => {
+
+        cy.cadastroUsuario(randomName, randomEmail, "ouidsdsdsdsds", false).then((response) => {
+
+            expect(response.status).to.equal(400);
+            expect(response.body).to.deep.equal( {
+                "message": [
+                "password must be shorter than or equal to 12 characters"
+                ],
+                "error": "Bad Request",
+                "statusCode": 400
+                })
+        })
+
+    })
     it('Cadastro não realizado - Formato de senha inválido (minimo 6 caracteres)', () => {
 
         cy.cadastroUsuario(randomName, randomEmail, 1234, false).then((response) => {
@@ -359,6 +375,60 @@ describe('Criação de review', () => {
                 expect(response.body).to.deep.equal( {
                     "message": [
                     "reviewText must be a string"
+                    ],
+                    "error": "Bad Request",
+                    "statusCode": 400
+                    })
+            })
+        })
+    })
+    it('criar review - bad request - score formato inválido', () => {
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'POST',
+                url: '/users/review',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: {
+                    "movieId": movieId,
+                    "score": '3',
+                    "reviewText": "lalallalal",
+                }, failOnStatusCode: false
+            }).then((response)=>{
+                expect(response.status).to.equal(400)
+                expect(response.body).to.deep.equal(  {
+                    "message": [
+                    "score must be a number conforming to the specified constraints"
+                    ],
+                    "error": "Bad Request",
+                    "statusCode": 400
+                    })
+            })
+        })
+    })
+    it('criar review - bad request - id formato inválido', () => {
+        cy.perfilComum(true).then((response) => {
+            token = response.body.accessToken
+
+            cy.request({
+                method: 'POST',
+                url: '/users/review',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: {
+                    "movieId": 'we',
+                    "score": 3,
+                    "reviewText": "lalallalal",
+                }, failOnStatusCode: false
+            }).then((response)=>{
+                expect(response.status).to.equal(400)
+                expect(response.body).to.deep.equal({
+                    "message": [
+                    "movieId must be an integer number"
                     ],
                     "error": "Bad Request",
                     "statusCode": 400

@@ -419,7 +419,7 @@ describe('Atualização de filmes', () => {
 
 
 // public
-describe.only('Consultar filmes', () => {
+describe('Consultar filmes', () => {
     let movieId
     let movieTitle
 
