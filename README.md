@@ -1,5 +1,10 @@
 ## API raromdb
 
+Para os testes foram utilizados: hooks, cy.commands, fixtures, aliases.... tentei por em prática cada recurso que conheci até o momento
+
+![Cachorro no laptop](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWs0cG03bmc0N2Fsb29yNmt4eXhiZmNjdzQxZG1xamNibWg5dWd5ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wpoLqr5FT1sY0/giphy.gif)
+
+**SOBRE A API**
 - E-mail é único e a senha de cadastro deve ter entre 6 e 12 dígitos
 - Existem 3 tipos de usuário. comum, crítico e Admin
 - Todos os usuários nascem com o tipo "comum", sem permissões especiais
@@ -30,5 +35,5 @@ Administrador:
 - Apenas usuários administradores podem buscar usuário pelo ID 
 - Apenas usuários administradores podem alterar informações de QUALQUER USUÁRIO
 - Apenas usuários administradores podem excluir definitivamente uma conta
-- 
+
 
