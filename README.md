@@ -1,15 +1,39 @@
-# Testes de API com Cypress 
+## API raromdb
 
-Todas as questões abaixo devem considerar a API Raromdb, cuja documentação swagger está publicada no seguinte endereço: https://raromdb-3c39614e42d4.herokuapp.com/swagger
+Para os testes foram utilizados: hooks, cy.commands, fixtures, aliases.... tentei por em prática cada recurso que conheci até o momento
 
-- Obs1: Durante os testes, lembre-se da importância de se validar tanto o contrato quanto o lado funcional da API. 
-- Obs2: Evite criar testes que sejam intermitentes, ou testes que podem passar a retornar erros quando executados mais de uma vez. Casos deste tipo serão levados em consideração durante a avaliação
+![Cachorro no laptop](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWs0cG03bmc0N2Fsb29yNmt4eXhiZmNjdzQxZG1xamNibWg5dWd5ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wpoLqr5FT1sY0/giphy.gif)
 
-### Questões
- 1. Para o recurso users, crie cenários de teste relacionados à criação e consulta de um usuário; 
- 2. Para o recurso auth crie cenários de teste relacionados à autenticação de um usuário; 
- 3. Para o recurso filmes, crie cenários de teste relacionados à consulta de filme. Por enquanto, desconsidere os detalhes sobre as avaliações dos filmes
+**SOBRE A API**
+- E-mail é único e a senha de cadastro deve ter entre 6 e 12 dígitos
+- Existem 3 tipos de usuário. comum, crítico e Admin
+- Todos os usuários nascem com o tipo "comum", sem permissões especiais
+- Um usuário pode ser promovido à crítico ou a admin sem passar por critérios
+especiais.
+- Na consulta detalhada de filme, todas as reviews já feitas devem ser retornadas,
+incluindo os dados do usuário que criou a avaliação.
 
- 
 
- 
+Todos (até não logados): 
+- Pode se cadastrar
+- Consulta de filmes é aberta - Pode listar todos os filmes cadastrados e buscar por titulo/ ID
+
+
+Usuario Comum: 
+- Login 
+- Consultar e alterar suas proprias informações
+- Criar review - um por filme
+- Alterar review 
+- Inativar a sua própria conta
+
+
+Administrador: 
+- Apenas usuários administradores podem cadastrar filmes
+- Apenas usuários administradores podem atualizar informações dos filmes
+- Apenas usuários administradores podem excluir filmes cadastrados
+- Apenas usuários administradores podem listar todos usuários
+- Apenas usuários administradores podem buscar usuário pelo ID 
+- Apenas usuários administradores podem alterar informações de QUALQUER USUÁRIO
+- Apenas usuários administradores podem excluir definitivamente uma conta
+
+
